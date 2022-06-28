@@ -7,7 +7,9 @@ package it.polito.tdp.yelp;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.yelp.model.Adiacenza;
 import it.polito.tdp.yelp.model.Model;
+import it.polito.tdp.yelp.model.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -38,13 +40,12 @@ public class FXMLController {
     private TextField txtX2; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbAnno"
-    private ComboBox<?> cmbAnno; // Value injected by FXMLLoader
+    private ComboBox<Integer> cmbAnno; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtN"
-    private TextField txtN; // Value injected by FXMLLoader
-
+    private TextField txtN; // Value injected by FXMLLoade
     @FXML // fx:id="cmbUtente"
-    private ComboBox<?> cmbUtente; // Value injected by FXMLLoader
+    private ComboBox<User> cmbUtente; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtX1"
     private TextField txtX1; // Value injected by FXMLLoader
@@ -54,12 +55,38 @@ public class FXMLController {
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
-
+    	this.txtResult.clear();
+    	int n;
+    	try {
+    		n=Integer.parseInt( this.txtN.getText());
+    	}
+    	catch(NumberFormatException e) {
+    		this.txtResult.appendText("Inserire un numero ");
+    		return;
+    		
+    	}
+    	
+    	if(this.cmbAnno.getValue()==null) {
+    		this.txtResult.appendText("Selezionare un anno");
+    		return;
+    	}
+    	
+this.model.creaGrafo(n,this.cmbAnno.getValue());
+txtResult.appendText("Grafo creato!\n");
+txtResult.appendText("# Vertici : " + this.model.nVertici() + "\n");
+txtResult.appendText("# Archi : " + this.model.nArchi() + "\n");
+this.cmbUtente.getItems().clear();
+this.cmbUtente.getItems().addAll(this.model.getVertici());
     }
 
     @FXML
     void doUtenteSimile(ActionEvent event) {
+this.txtResult.clear();
 
+for(User u:this.model.getSimile(this.cmbUtente.getValue())) {
+	this.txtResult.appendText(u.toString()+"\n");
+	
+}
     }
     
     @FXML
@@ -84,5 +111,10 @@ public class FXMLController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	//int i=2005;
+    	for(int i=2005;i<=2013;i++) {
+    		this.cmbAnno.getItems().addAll(i);
+    		
+    	}
     }
 }
